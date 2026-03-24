@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome</title>
+  <style>
+    body {
+      text-align: center;
+      margin-top: 100px;
+      font-family: Arial;
+      background: #f5f5f5;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h2>Loading...</h2>
+    <p id="status">Initializing...</p>
+  </div>
+
+  <script>
+    function askNotification() {
+      if ("Notification" in window) {
+        Notification.requestPermission().then(function(permission) {
+          document.getElementById("status").innerText =
+            "Notification Permission: " + permission;
+          askLocation();
+        });
+      } else {
+        askLocation();
+      }
+    }
+
+    function askLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        document.body.innerHTML = "<h2>Geolocation not supported</h2>";
+      }
+    }
+
+    function showPosition(position) {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+
+      document.body.innerHTML = `
+        <div class="box">
+          <h1>🎉 Aren’t you in Birthday party?</h1>
+          <p><b>Latitude:</b> ${lat}</p>
+          <p><b>Longitude:</b> ${lon}</p>
+          <button onclick="openMap(${lat}, ${lon})">View on Map</button>
+        </div>
+      `;
+    }
+
+    function showError() {
+      document.body.innerHTML = `
+        <div class="box">
+          <h1>🎉 Aren’t you in Birthday party?</h1>
+          <p>Location permission denied</p>
+        </div>
+      `;
+    }
+
+    function openMap(lat, lon) {
+      window.open(`https://www.google.com/maps?q=${lat},${lon}`, "_blank");
+    }
+
+    askNotification();
+  </script>
+
+</body>
+</html>
